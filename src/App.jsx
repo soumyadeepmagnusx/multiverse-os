@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
+import SpatialMultiverseView from './components/spatial/SpatialMultiverseView';
+import QuantumParticlesBackground from './components/spatial/QuantumParticlesBackground';
 import CommandCenterDashboard from './components/dashboard/CommandCenterDashboard';
 import CharacterLoreDossier from './components/CharacterLoreDossier';
 import SceneSynthesizer from './components/SceneSynthesizer';
@@ -7,7 +9,6 @@ import ContinuityAuditor from './components/ContinuityAuditor';
 import PromptInspectorModal from './components/PromptInspectorModal';
 import ApiKeyModal from './components/ApiKeyModal';
 import { defaultUniverse } from './data/sampleUniverse';
-import confetti from 'canvas-confetti';
 
 export default function App() {
   const [universe, setUniverse] = useState(() => {
@@ -15,7 +16,7 @@ export default function App() {
     return saved ? JSON.parse(saved) : defaultUniverse;
   });
 
-  const [activeTab, setActiveTab] = useState('command-center'); // 'command-center' | 'synthesizer' | 'auditor' | 'lore'
+  const [activeTab, setActiveTab] = useState('spatial'); // 'spatial' | 'command-center' | 'synthesizer' | 'auditor' | 'lore'
   const [activeNode, setActiveNode] = useState(universe.timelines[0]?.nodes[0]);
   const [auditorDraftText, setAuditorDraftText] = useState('');
   const [isPromptInspectorOpen, setIsPromptInspectorOpen] = useState(false);
@@ -39,12 +40,12 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-slate-200 flex flex-col font-sans cyber-grid-bg relative selection:bg-cyan-500/30 selection:text-cyan-200">
+    <div className="min-h-screen bg-[#030712] text-slate-200 flex flex-col font-mono relative selection:bg-cyan-500/30 selection:text-cyan-200 overflow-x-hidden">
       
-      {/* Subtle Slow Scanline Glitch Overlay Across Screen */}
-      <div className="scanline-overlay pointer-events-none" />
+      {/* Drifting Ambient Quantum Particles & Moving Grid Canvas */}
+      <QuantumParticlesBackground />
 
-      {/* Industrial Cyberpunk Header */}
+      {/* Industrial Obsidian Header */}
       <Header
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -53,10 +54,21 @@ export default function App() {
         universe={universe}
       />
 
-      {/* Main Command Center Container */}
-      <main className="flex-1 max-w-[1700px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-5">
+      {/* Main Content Area */}
+      <main className="flex-1 max-w-[1850px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 relative z-10">
         
-        {/* HERO COMMAND CENTER VIEW */}
+        {/* 1. SPATIAL QUANTUM LATTICE VIEW (70% Canvas + 30% Integrity Core) */}
+        {activeTab === 'spatial' && (
+          <SpatialMultiverseView
+            onOpenSynthesizer={() => setActiveTab('synthesizer')}
+            onOpenAuditor={(text) => {
+              if (text) setAuditorDraftText(text);
+              setActiveTab('auditor');
+            }}
+          />
+        )}
+
+        {/* 2. INDUSTRIAL DATA-DENSE COMMAND CENTER VIEW */}
         {activeTab === 'command-center' && (
           <CommandCenterDashboard
             universe={universe}
@@ -68,7 +80,7 @@ export default function App() {
           />
         )}
 
-        {/* STEERABLE PROMPT LAB */}
+        {/* 3. STEERABLE PROMPT LAB */}
         {activeTab === 'synthesizer' && (
           <SceneSynthesizer
             universe={universe}
@@ -78,7 +90,7 @@ export default function App() {
           />
         )}
 
-        {/* CONTINUITY GUARDRAIL AUDITOR */}
+        {/* 4. CONTINUITY GUARDRAIL AUDITOR */}
         {activeTab === 'auditor' && (
           <ContinuityAuditor
             universe={universe}
@@ -86,7 +98,7 @@ export default function App() {
           />
         )}
 
-        {/* WORLD CANON & CHARACTER DOSSIERS */}
+        {/* 5. WORLD CANON & CHARACTER DOSSIERS */}
         {activeTab === 'lore' && (
           <CharacterLoreDossier
             universe={universe}
@@ -96,21 +108,21 @@ export default function App() {
 
       </main>
 
-      {/* Cyber Toast Notification */}
+      {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-[#0E1424] border border-[#00E5FF]/60 text-white px-4 py-2.5 rounded-xl shadow-2xl text-xs font-mono font-bold flex items-center gap-2 glow-cyan animate-bounce">
+        <div className="fixed bottom-6 right-6 z-50 bg-[#0A1020] border border-[#00E5FF]/70 text-white px-4 py-2.5 rounded-xl shadow-2xl text-xs font-mono font-bold flex items-center gap-2 glow-cyan animate-bounce">
           <span className="w-2 h-2 rounded-full bg-[#00E5FF] animate-ping" />
           <span>{toastMessage}</span>
         </div>
       )}
 
-      {/* Cyber Command Footer */}
-      <footer className="border-t border-slate-900 bg-[#070A12] py-4 text-xs font-mono text-slate-500">
-        <div className="max-w-[1700px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+      {/* Obsidian Footer */}
+      <footer className="border-t border-white/10 bg-[#030712]/90 backdrop-blur-xl py-3 text-xs font-mono text-slate-500 relative z-10">
+        <div className="max-w-[1850px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center space-x-2">
-            <span className="text-[#00E5FF] font-bold">MULTIVERSE//OS v2.8</span>
+            <span className="text-[#00E5FF] font-bold">MULTIVERSE//OS v3.0 SPATIAL</span>
             <span>•</span>
-            <span className="text-slate-400">DATA-DENSE COMMAND CENTER // TECHNO INDIA UNIVERSITY HACKATHON</span>
+            <span className="text-slate-400">OBSIDIAN NEON LATTICE // TECHNO INDIA UNIVERSITY HACKATHON</span>
           </div>
           <div className="flex items-center space-x-4">
             <button
@@ -119,15 +131,15 @@ export default function App() {
                   localStorage.removeItem('multiverse_os_universe');
                   setUniverse(defaultUniverse);
                   setActiveNode(defaultUniverse.timelines[0].nodes[0]);
-                  showToast("Telemetry ground state restored!");
+                  showToast("Quantum ground state restored!");
                 }
               }}
               className="text-slate-500 hover:text-slate-300 underline"
             >
-              Reset Telemetry Data
+              Reset Quantum State
             </button>
             <span>•</span>
-            <span className="text-[#FF9F1C] font-semibold">94.2% Stability Verified</span>
+            <span className="text-[#10B981] font-semibold">100% Causal Synchronization</span>
           </div>
         </div>
       </footer>
