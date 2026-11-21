@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Video captures and recordings
+recorded_video/
+*.mp4
+*.webm
+record_script.py

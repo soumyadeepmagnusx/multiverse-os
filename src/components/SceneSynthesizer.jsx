@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Sliders, Sparkles, Send, ShieldCheck, Copy, Check, Eye, RefreshCw, Wand2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Sliders, Sparkles, Send, ShieldCheck, Copy, Check, Eye, RefreshCw, Wand2, Volume2, VolumeX, Play, Square } from 'lucide-react';
 import { generateSceneWithEngine } from '../services/aiService';
+import { voiceEngine, CHARACTER_VOICE_PROFILES } from '../services/voiceService';
 
 export default function SceneSynthesizer({ 
   universe, 
@@ -24,6 +25,22 @@ export default function SceneSynthesizer({
   const [generatedResult, setGeneratedResult] = useState(activeNode?.content || '');
   const [copied, setCopied] = useState(false);
   const [generationMeta, setGenerationMeta] = useState(null);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [selectedVoiceSpeaker, setSelectedVoiceSpeaker] = useState('narrator');
+
+  useEffect(() => {
+    voiceEngine.subscribeState(playing => setIsAudioPlaying(playing));
+    return () => voiceEngine.stop();
+  }, []);
+
+  const handleToggleVoice = () => {
+    if (isAudioPlaying) {
+      voiceEngine.stop();
+    } else {
+      if (!generatedResult) return;
+      voiceEngine.speakText(generatedResult, selectedVoiceSpeaker);
+    }
+  };
 
   const toggleChar = (name) => {
     if (selectedCharNames.includes(name)) {
@@ -275,6 +292,31 @@ export default function SceneSynthesizer({
               </div>
 
               <div className="flex items-center gap-2">
+                {/* Voice Speaker Selector & TTS Button */}
+                <select
+                  value={selectedVoiceSpeaker}
+                  onChange={e => setSelectedVoiceSpeaker(e.target.value)}
+                  className="bg-slate-950 border border-slate-800 text-slate-300 rounded-lg px-2 py-1 text-[11px] font-mono focus:outline-none"
+                >
+                  <option value="narrator">Voice: Narrator</option>
+                  <option value="Kaelen Vex">Voice: Kaelen</option>
+                  <option value="Lady Morgana Kane">Voice: Morgana</option>
+                  <option value="C1-PH3R">Voice: C1-PH3R</option>
+                </select>
+
+                <button
+                  onClick={handleToggleVoice}
+                  disabled={!generatedResult}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-lg border text-xs font-mono font-bold transition disabled:opacity-50 ${
+                    isAudioPlaying
+                      ? 'bg-rose-500/20 text-rose-300 border-rose-500/50 animate-pulse'
+                      : 'bg-cyan-500/10 text-cyan-300 border-cyan-500/40 hover:bg-cyan-500/20'
+                  }`}
+                >
+                  {isAudioPlaying ? <Square className="w-3.5 h-3.5 text-rose-400" /> : <Volume2 className="w-3.5 h-3.5 text-cyan-400" />}
+                  <span>{isAudioPlaying ? 'Stop TTS' : 'Synthesize Voice'}</span>
+                </button>
+
                 <button
                   onClick={handleCopy}
                   className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white text-xs"
