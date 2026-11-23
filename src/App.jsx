@@ -12,6 +12,8 @@ import ExportModal from './components/ExportModal';
 import LoreSearchModal from './components/LoreSearchModal';
 import PromptInspectorModal from './components/PromptInspectorModal';
 import ApiKeyModal from './components/ApiKeyModal';
+import SystemTelemetryPill from './components/SystemTelemetryPill';
+import KeyboardShortcutsModal from './components/KeyboardShortcutsModal';
 import { defaultUniverse } from './data/sampleUniverse';
 
 export default function App() {
@@ -30,6 +32,7 @@ export default function App() {
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
   // Sync universe state to localStorage
@@ -161,6 +164,13 @@ export default function App() {
             <span className="text-slate-400">TECHNO INDIA UNIVERSITY HACKATHON</span>
           </div>
           <div className="flex items-center space-x-4">
+            <SystemTelemetryPill />
+            <button
+              onClick={() => setIsShortcutsOpen(true)}
+              className="text-slate-400 hover:text-cyan-300 underline text-[11px]"
+            >
+              Shortcuts (?)
+            </button>
             <button
               onClick={() => {
                 if (window.confirm("Reset universe to initial demo state?")) {
@@ -204,6 +214,11 @@ export default function App() {
         onClose={() => setIsSearchModalOpen(false)}
         universe={universe}
         onSelectResult={handleSearchResultSelect}
+      />
+
+      <KeyboardShortcutsModal
+        isOpen={isShortcutsOpen}
+        onClose={() => setIsShortcutsOpen(false)}
       />
 
     </div>
