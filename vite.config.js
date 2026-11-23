@@ -8,4 +8,15 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          ui: ['lucide-react', 'canvas-confetti'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000,
+  },
 })
